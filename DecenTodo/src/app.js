@@ -43,6 +43,7 @@ app = {
             const decenTodoContract = TruffleContract(decenTodo);
             decenTodoContract.setProvider(new Web3.providers.HttpProvider('http://127.0.0.1:7545'));
             app.contracts.decenTodo = await decenTodoContract.deployed();
+            if(app.contracts.decenTodo == undefined) throw "Couldn't get smart contract from blockchain"
             console.log("Smart contract loaded successfully");
         } catch (error) {
             console.log("Error occured while loading smart contract: " + error);
@@ -57,15 +58,15 @@ app = {
             $dateIncludedCb = $('#dateIncludedCb');
 
             content = $contentInput.val();
+            console.log(content);
             date = new Date($dateInput.val());
             dateIncluded = $dateIncludedCb.prop('checked');
 
             await app.contracts.decenTodo.createTask(content, date.getTime(), dateIncluded, { from: app.account });
         })
     },
-
 }
 
-$(() => {
-    app.load();
+$(async () => {
+    await app.load();
 })
